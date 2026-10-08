@@ -153,3 +153,23 @@ Screenshot of the auto-generated docs at http://127.0.0.1:8000/docs:
 GET /expenses/{expense_id}, DELETE /expenses/{expense_id}, GET /summary, plus the
 Category/Currency/ExpenseCreate/ExpenseRead schemas. FastAPI generated all of it from
 the code; we wrote zero lines of documentation.
+
+## 7. Live deployment (Render free tier) — real output, 2026-10-08
+
+Deployed via render.yaml Blueprint to https://nairatrack-api.onrender.com
+
+```
+$ curl -s -o /dev/null -w "%{http_code} %{time_total}s\n" https://nairatrack-api.onrender.com/docs
+200 3.443975s
+```
+
+Posted the same three expenses to the live API (ids 1–3 returned), then:
+
+```
+$ curl -s "https://nairatrack-api.onrender.com/summary?month=2026-10"
+{"month":"2026-10","count":3,"total_ngn":"23662.48","total_usd":"17.79","usd_to_ngn_rate":"1330.207024","rate_source":"live","by_category_ngn":{"Data & airtime":"3500.00","Other":"15962.48","Transport":"4200.00"}}
+```
+
+Note: this run was warm. The free tier spins down when idle — the first request after a
+quiet period takes ~30–60s while the service wakes (the video says so honestly).
+SQLite data is wiped on redeploys.
